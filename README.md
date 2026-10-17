@@ -30,6 +30,14 @@ node tests/run.js             # 单元测试（可附分类名只跑部分，如
 
 浏览器冒烟测试：用浏览器打开 `tests/smoke.html`，页面顶部显示 `PASS` 即通过。
 
+## 发布
+
+```bash
+node scripts/release.js       # 测试 → 更新资源版本号 → 打包 dist/home-page-<版本>.zip
+```
+
+资源引用带 `?v=` 版本号，避免 CDN 缓存旧的 CSS/JS；上传 zip 到服务器解压覆盖即可。
+
 ## 目录
 
 ```
@@ -37,4 +45,5 @@ index.html  tools.html  md5.html(旧链接跳转)
 css/        tokens.css 设计变量 · style.css 主页 · tools.css 工具页
 js/         main.js 主题与公共交互 · tools/ 工具内核与各分类工具
 tests/      单元测试与浏览器冒烟测试（不部署）
+scripts/    release.js 发布脚本（不部署）
 ```
