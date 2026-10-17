@@ -1,0 +1,86 @@
+<!-- AI Accept 2026-10-16 main v1 -->
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="纯前端在线工具集：JSON 格式化（支持注释）、树形视图与 JSONPath 查询、JSON / SQL 建表转 C# 实体、SQL/XML/CSS 格式化、Base64/URL/Unicode 编解码、MD5/SHA/HMAC 哈希、AES 加解密、JWT 解码、时间戳、文本对比、正则测试等，本地计算不上传。">
+  <meta name="theme-color" content="#F5F3EE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <title>在线工具 · 沈超</title>
+  <script>
+    // 首屏前确定主题，避免深色用户看到浅色闪烁
+    (function () {
+      try {
+        var t = localStorage.getItem('theme-preference');
+        if (t !== 'light' && t !== 'dark') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css?v=2026101705">
+  <link rel="stylesheet" href="css/style.css?v=2026101705">
+  <link rel="stylesheet" href="css/tools.css?v=2026101705">
+</head>
+
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="container tools-container header-inner">
+      <a class="brand" href="index.html" aria-label="沈超 · 返回主页">
+        <span class="brand-mark" aria-hidden="true">沈</span>
+        <span class="brand-name">沈超</span>
+      </a>
+      <nav aria-label="主导航">
+        <ul class="nav-links">
+          <li><a href="index.html"><span aria-hidden="true">←</span> 返回主页</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色模式" aria-pressed="false">
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <nav class="tools-menu" aria-label="工具分类">
+    <div class="container tools-container tools-menu-inner">
+      <a class="tools-menu-home" href="#">全部</a>
+      <ul class="tools-menu-list" id="tools-menu-list"></ul>
+      <div class="tools-search">
+        <label class="visually-hidden" for="tools-search">搜索工具</label>
+        <input id="tools-search" class="field-input" type="search" placeholder="搜索工具，如 json、base64" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="tools-search-results">
+        <ul class="tools-panel tools-search-results" id="tools-search-results" role="listbox" hidden></ul>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main" class="container tools-container tools-layout">
+    <div class="tool-view" id="tool-view" aria-live="off"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container tools-container footer-inner">
+      <p>ICP 备案号：<a id="beian-no" href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">蜀ICP备13002783号-1</a></p>
+      <p id="copyright">Copyright &copy; 2016-<span id="year">2026</span>. 沈超 All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/md5.js?v=2026101705"></script>
+  <script src="js/tools/core.js?v=2026101705"></script>
+  <script src="js/tools/hash.js?v=2026101705"></script>
+  <script src="js/tools/json.js?v=2026101705"></script>
+  <script src="js/tools/format.js?v=2026101705"></script>
+  <script src="js/tools/encode.js?v=2026101705"></script>
+  <script src="js/tools/crypto.js?v=2026101705"></script>
+  <script src="js/tools/dev.js?v=2026101705"></script>
+  <script src="js/tools/jsontree.js?v=2026101705"></script>
+  <script src="js/tools/sqlentity.js?v=2026101705"></script>
+  <script src="js/tools/app.js?v=2026101705"></script>
+  <script src="js/main.js?v=2026101705"></script>
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+# 仓库内统一 LF，检出时由各平台 Git 自行转换
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary

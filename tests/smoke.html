@@ -1,0 +1,205 @@
+<!-- AI Accept 2026-10-17 main v1 -->
+<!-- 在线工具浏览器冒烟测试：直接用浏览器打开本文件（file:// 即可），或 headless Chrome --dump-dom 读取 #result。
+     覆盖 node 单测测不到的部分：真实 DOM 渲染、每个工具的界面流程、DOMParser（XML → JSON）、WebCrypto（AES）。
+     脚本列表须与 tools.html 保持一致（tests/run.js 会校验）。 -->
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex">
+  <title>RUNNING · 工具冒烟测试</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tools.css">
+</head>
+
+<body>
+  <pre id="result">running…</pre>
+  <ul id="tools-menu-list" hidden></ul>
+  <input id="tools-search" hidden>
+  <ul id="tools-search-results" hidden></ul>
+  <main id="main">
+    <div id="tool-view"></div>
+  </main>
+
+  <script>
+    window.__smokeErrors = [];
+    window.addEventListener('error', function (e) { window.__smokeErrors.push(e.message); });
+    window.addEventListener('unhandledrejection', function (e) { window.__smokeErrors.push('unhandled: ' + (e.reason && e.reason.message || e.reason)); });
+  </script>
+  <!-- SCRIPTS:BEGIN -->
+  <script src="../js/md5.js"></script>
+  <script src="../js/tools/core.js"></script>
+  <script src="../js/tools/hash.js"></script>
+  <script src="../js/tools/json.js"></script>
+  <script src="../js/tools/format.js"></script>
+  <script src="../js/tools/encode.js"></script>
+  <script src="../js/tools/crypto.js"></script>
+  <script src="../js/tools/dev.js"></script>
+  <script src="../js/tools/jsontree.js"></script>
+  <script src="../js/tools/sqlentity.js"></script>
+  <script src="../js/tools/app.js"></script>
+  <!-- SCRIPTS:END -->
+  <script>
+    (function () {
+      'use strict';
+      var results = [], pass = 0, fail = 0;
+      function check(name, cond, detail) {
+        if (cond) pass++;
+        else { fail++; results.push('FAIL ' + name + (detail ? ' :: ' + detail : '')); }
+      }
+
+      // 带注释的样例：日常从配置、日志、接口文档里复制来的 JSON 常见形态
+      var JSONC = '{\n  // 消息头\n  "Headers": {\n    "cap-callback-name": null,//的\n    "cap-msg-id": "335322164322414771" /* 雪花 ID */\n  },\n  "Value": {"ExtAuditStatus": 4, "url": "http://a.com//x"}\n}';
+      var JSONC_ARRAY = '[\n  // 用户列表\n  {"name": "张三", "age": 30}, // 第一位\n  {"name": "李四", "age": 25}\n]';
+      var JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+      // 每个工具填入的样例；expect 校验结果文本（缺省只要求有输出且无报错）
+      var CASES = {
+        'json-format': { input: JSONC, expect: function (o) { return o.indexOf('//的') >= 0 && o.indexOf('/* 雪花 ID */') >= 0 && o.indexOf('http://a.com//x') >= 0; } },
+        'json-minify': { input: JSONC, expect: function (o) { return o.indexOf('"url":"http://a.com//x"') >= 0 && o.indexOf('//的') < 0 && o.indexOf('\n') < 0; } },
+        'json-sort': { input: JSONC, expect: function (o) { return o.indexOf('"ExtAuditStatus": 4') >= 0 && o.indexOf('//的') < 0; } },
+        'json-csv': { input: JSONC_ARRAY, expect: function (o) { return /name,age/.test(o) && /张三,30/.test(o); } },
+        'json-xml': { input: '<!-- 注释 --><user id="1"><name>张三</name><tag>a</tag><tag>b</tag></user>', expect: function (o) { var v = JSON.parse(o); return v.user['@id'] === '1' && v.user.tag.length === 2; } },
+        'json-yaml': { input: JSONC, expect: function (o) { return /ExtAuditStatus: 4/.test(o); } },
+        'json-csharp': { input: JSONC, expect: function (o) { return /public class/.test(o) && /ExtAuditStatus/.test(o); } },
+        'json-ts': { input: JSONC, expect: function (o) { return /interface/.test(o) && /ExtAuditStatus: number/.test(o); } },
+        'sql-format': { input: "select a, b -- 行尾注释\nfrom t /* 块注释 */ where x = 'it''s' and y in (select id from u)", expect: function (o) { return o.indexOf('-- 行尾注释') >= 0 && o.indexOf('/* 块注释 */') >= 0 && o.indexOf("'it''s'") >= 0; } },
+        'xml-format': { input: '<a><!-- 注释 --><b x="1>2">t</b><![CDATA[<raw>]]></a>', expect: function (o) { return o.indexOf('<!-- 注释 -->') >= 0 && o.indexOf('<![CDATA[<raw>]]>') >= 0; } },
+        'css-format': { input: '/* 注释 */a{color:red; // 主色\nmargin:0}@media (max-width:1px){b{margin:0}}', expect: function (o) { return o.indexOf('/* 注释 */') >= 0 && /color: red; \/\/ 主色\n\s+margin: 0;/.test(o) && /@media/.test(o); } },
+        'base64': { input: 'hello 中文 // 不是注释' },
+        'url-codec': { input: 'a=1&b=中文 /* x */' },
+        'escape': { input: 'hello 中文' },
+        'unicode': { input: '中文😀' },
+        'base32': { input: 'foobar' },
+        'punycode': { input: '中文.com', expect: function (o) { return o.indexOf('xn--fiq228c.com') >= 0; } },
+        'morse': { input: 'SOS', expect: function (o) { return o.indexOf('... --- ...') >= 0; } },
+        'md5': { input: 'abc', expect: function (o) { return o.indexOf('900150983cd24fb0d6963f7d28e17f72') >= 0; } },
+        'sha': { input: 'abc', expect: function (o) { return o.indexOf('ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad') >= 0; } },
+        'hmac': { input: 'abc' },
+        'crc': { input: '123456789', expect: function (o) { return /cbf43926/i.test(o); } },
+        'jwt': { input: JWT, expect: function (o) { return o.indexOf('John Doe') >= 0; } },
+        'text-diff': { input: 'a\nb\nc', second: 'a\nB\nc\nd', expect: function (o) { return /d/.test(o); } },
+        'case-convert': { input: 'XMLHttpRequest', expect: function (o) { return o.indexOf('xmlHttpRequest') >= 0 && o.indexOf('xml_http_request') >= 0; } },
+        'sql-csharp': { input: "CREATE TABLE [dbo].[T_User] ([Id] int NOT NULL PRIMARY KEY, [UserName] nvarchar(50) NOT NULL -- 用户名\n)", expect: function (o) { return /public class User/.test(o) && o.indexOf('/// 用户名') >= 0 && /public string UserName/.test(o); } },
+        // 树形视图没有文本输出框：用 check 直接检查树 DOM 与节点路径
+        'json-tree': {
+          input: '{\n  // 注释\n  "a": {"b-c": [1, 2, 3]}\n}',
+          noOutput: true,
+          check: function (b) {
+            var items = b.querySelectorAll('[role="treeitem"]');
+            if (items.length < 3) return '树节点不足：' + items.length;
+            var key = [].filter.call(b.querySelectorAll('.jt-key'), function (k) { return k.textContent.indexOf('b-c') >= 0; })[0];
+            if (!key) return '找不到 b-c 节点';
+            key.closest('.jt-row').click();
+            var p = b.querySelector('.jt-detail-path');
+            var path = p ? p.textContent : '';
+            return path.indexOf("$.a['b-c']") >= 0 ? null : '路径显示为：' + path;
+          }
+        }
+      };
+      // 只检查能渲染、无报错（交互依赖文件选择、随机数或异步接口）
+      var RENDER_ONLY = { 'file-hash': 1, 'aes': 1, 'password': 1, 'uuid': 1, 'timestamp': 1, 'regex': 1, 'bandwidth': 1 };
+
+      function body() { return document.querySelector('.tool-body'); }
+      // 结果区：只读框 / 键值表 / 富文本区；双向工具（左右都可编辑）则取输入框以外的文本框
+      function outputs(b, inputs) {
+        var nodes = [].slice.call(b.querySelectorAll('textarea[readonly], .kv-value, .tool-pre'));
+        if (!nodes.length) nodes = [].slice.call(b.querySelectorAll('textarea')).filter(function (n) { return inputs.indexOf(n) < 0; });
+        return nodes.map(function (n) { return n.tagName === 'TEXTAREA' ? n.value : n.textContent; }).join('\n');
+      }
+      function fire(el) { el.dispatchEvent(new Event('input', { bubbles: true })); }
+
+      var ids = Tools.list.map(function (t) { return t.id; });
+      check('注册了 34 个工具', ids.length === 34, ids.length);
+
+      function runTool(i, done) {
+        if (i >= ids.length) return done();
+        var id = ids[i], before = window.__smokeErrors.length;
+        location.hash = id;
+        setTimeout(function () {
+          var b = body();
+          check(id + ' 渲染', b && b.children.length > 0);
+          var c = CASES[id], used = [];
+          if (b && c) {
+            var areas = [].slice.call(b.querySelectorAll('textarea:not([readonly])'));
+            var target = areas[0] || b.querySelector('input.field-input:not([readonly])');
+            if (target) { target.value = c.input; fire(target); used.push(target); }
+            if (c.second && areas[1]) { areas[1].value = c.second; fire(areas[1]); used.push(areas[1]); }
+            var primary = b.querySelector('.tool-actions .btn-primary');
+            if (primary) primary.click();
+          }
+          setTimeout(function () {
+            if (b && c) {
+              var err = b.querySelector('.field-msg.is-error');
+              check(id + ' 无错误提示', !err, err && err.textContent);
+              var out = outputs(b, used);
+              if (!c.noOutput) check(id + ' 有输出', out.replace(/\s/g, '').length > 0);
+              if (c.check) {
+                var problem;
+                try { problem = c.check(b); } catch (e) { problem = '检查异常：' + (e && e.message); }
+                check(id + ' 专项检查', !problem, problem);
+              }
+              if (c.expect) {
+                var okExp = false;
+                try { okExp = !!c.expect(out); } catch (e) { okExp = false; }
+                check(id + ' 输出符合预期', okExp, out.slice(0, 160).replace(/\n/g, '⏎'));
+              }
+            } else if (!RENDER_ONLY[id]) {
+              check(id + ' 缺少冒烟用例', false);
+            }
+            check(id + ' 无 JS 异常', window.__smokeErrors.length === before, window.__smokeErrors.slice(before).join(' | '));
+            runTool(i + 1, done);
+          }, 450);
+        }, 120);
+      }
+
+      // DOMParser：XML → JSON（node 中无法测试）
+      function domParserChecks() {
+        var v = Tools.lib.xmlToJson('<?xml version="1.0"?><!-- c --><r a="1"><i>x</i><i>y</i><e/><d><![CDATA[<b>&</b>]]></d></r>');
+        check('xmlToJson 属性', v.r['@a'] === '1', JSON.stringify(v));
+        check('xmlToJson 同名合并为数组', v.r.i && v.r.i.length === 2);
+        check('xmlToJson CDATA', JSON.stringify(v).indexOf('<b>&</b>') >= 0);
+        var back = Tools.lib.xmlToJson(Tools.lib.jsonToXml(v));
+        check('XML ⇄ JSON 往返', JSON.stringify(back) === JSON.stringify(v), JSON.stringify(back));
+        var threw = false;
+        try { Tools.lib.xmlToJson('<a><b></a>'); } catch (e) { threw = true; }
+        check('xmlToJson 非良构报错', threw);
+      }
+
+      // WebCrypto：AES 往返 + 篡改检测
+      function aesChecks(done) {
+        var C = Tools.lib.crypto;
+        if (!C.hasSubtle()) { check('WebCrypto 可用（file:// 应为安全上下文）', false); return done(); }
+        var enc = new TextEncoder(), dec = new TextDecoder();
+        var key = C.randomBytes(32), iv12 = C.randomBytes(12), iv16 = C.randomBytes(16);
+        var msg = enc.encode('AES 测试 😀');
+        C.aesEncrypt('AES-GCM', key, iv12, msg).then(function (ct) {
+          return C.aesDecrypt('AES-GCM', key, iv12, ct).then(function (pt) {
+            check('AES-GCM 往返', dec.decode(pt) === 'AES 测试 😀');
+            ct[0] ^= 1;
+            return C.aesDecrypt('AES-GCM', key, iv12, ct).then(function () { check('AES-GCM 篡改应失败', false); }, function () { check('AES-GCM 篡改应失败', true); });
+          });
+        }).then(function () {
+          return C.aesEncrypt('AES-CBC', key.slice(0, 16), iv16, msg).then(function (ct) {
+            check('AES-CBC 密文长度为块整数倍', ct.length % 16 === 0);
+            return C.aesDecrypt('AES-CBC', key.slice(0, 16), iv16, ct);
+          }).then(function (pt) { check('AES-CBC 往返', dec.decode(pt) === 'AES 测试 😀'); });
+        }).then(done, function (e) { check('AES 流程', false, e && e.message); done(); });
+      }
+
+      function finish() {
+        location.hash = '';
+        var summary = (fail ? 'FAIL' : 'PASS') + ' · ' + pass + ' passed · ' + fail + ' failed';
+        document.title = summary;
+        document.getElementById('result').textContent = summary + (results.length ? '\n' + results.join('\n') : '');
+      }
+
+      try { domParserChecks(); } catch (e) { check('DOMParser 检查', false, e && e.message); }
+      aesChecks(function () { runTool(0, finish); });
+    })();
+  </script>
+</body>
+
+</html>

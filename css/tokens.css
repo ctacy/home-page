@@ -1,0 +1,84 @@
+/* AI Accept 2026-10-16 main v1 */
+/* 瑞士版式 · 朱印 —— 纸、墨、一抹朱红 */
+:root {
+  /* Type */
+  --font-text: "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", Arial, system-ui, sans-serif;
+  --font-display: "Helvetica Neue", "Arial Black", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Consolas, "Cascadia Mono", Menlo, monospace;
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 21px;
+  --text-xl: clamp(28px, 4vw, 36px);
+  --text-2xl: clamp(36px, 5vw, 56px);
+  --text-display: clamp(48px, 8vw, 104px);
+  /* 唯一的 signature 字号：首屏「16」，只用一次 */
+  --text-signature: clamp(180px, 34vw, 460px);
+
+  /* Space */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;
+  --s10: 128px;
+  --s11: 160px;
+
+  --container: 1200px;
+
+  /* Color — light: 宣纸 + 松烟墨 + 印泥朱 */
+  --bg: #F5F3EE;
+  --surface: #FFFFFF;
+  --text: #141413;
+  --text-2: #57534C;
+  --border: rgb(20 20 19 / .14);
+  --rule: #141413;
+  --accent: #C23A22;
+  --accent-text: #A8301B;
+  --accent-ink: #F5F3EE;
+  --ink-fill: #141413;
+  --ink-fill-text: #F5F3EE;
+  --selection: rgb(194 58 34 / .2);
+
+  /* 工具页：差异 / 匹配高亮底色（文字仍用 --text，保证对比度） */
+  --tint-add: rgb(46 125 50 / .16);
+  --tint-del: rgb(194 58 34 / .16);
+  --tint-mark: rgb(214 160 0 / .32);
+
+  /* Shape & motion */
+  --radius: 0;
+  --ease: cubic-bezier(.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(.16, 1, .3, 1);
+  --t-fast: 140ms;
+  --t-med: 240ms;
+  --t-page: 420ms;
+
+  color-scheme: light;
+}
+
+/* Dark: 墨池 —— 暖近黑底，朱色提亮去饱和 */
+[data-theme="dark"] {
+  --bg: #131211;
+  --surface: #1A1917;
+  --text: #E8E4DD;
+  --text-2: #A39E95;
+  --border: rgb(255 255 255 / .12);
+  --rule: #E8E4DD;
+  --accent: #E5624A;
+  --accent-text: #E5624A;
+  --accent-ink: #131211;
+  --ink-fill: #E8E4DD;
+  --ink-fill-text: #131211;
+  --selection: rgb(229 98 74 / .3);
+
+  --tint-add: rgb(102 187 106 / .2);
+  --tint-del: rgb(229 98 74 / .22);
+  --tint-mark: rgb(255 202 40 / .3);
+
+  color-scheme: dark;
+}

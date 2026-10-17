@@ -1,0 +1,494 @@
+<!-- AI Accept 2026-10-16 main v1 -->
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="沈超，项目经理、全栈开发工程师，2010 年入行，项目覆盖医疗、政务、零售电商与通信等行业。承接网站建设、微信小程序、APP 与企业管理系统定制，提供 AI 应用集成、系统安全加固与运维托管服务。">
+  <meta name="theme-color" content="#F5F3EE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="沈超 · 项目经理 / 全栈开发工程师">
+  <meta property="og:description" content="项目经理 / 全栈开发工程师，2010 年入行。网站建设 · 微信小程序 · APP · 企业系统 · AI 应用集成">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <title>沈超 · 项目经理 / 全栈开发工程师</title>
+  <script>
+    // 首屏前确定主题，避免深色用户看到浅色闪烁
+    (function () {
+      try {
+        var t = localStorage.getItem('theme-preference');
+        if (t !== 'light' && t !== 'dark') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css?v=2026101705">
+  <link rel="stylesheet" href="css/style.css?v=2026101705">
+</head>
+
+<body id="top">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="沈超 · 回到顶部">
+        <span class="brand-mark" aria-hidden="true">沈</span>
+        <span class="brand-name">沈超</span>
+      </a>
+      <nav aria-label="主导航">
+        <ul class="nav-links">
+          <li><a href="#timeline"><span class="nav-no">02</span>足迹</a></li>
+          <li><a href="#skills"><span class="nav-no">03</span>技能</a></li>
+          <li><a href="#services"><span class="nav-no">04</span>服务</a></li>
+          <li><a href="#tools"><span class="nav-no">05</span>工具</a></li>
+          <li><a href="#contact"><span class="nav-no">06</span>联系</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换为深色模式" aria-pressed="false">
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- 01 关于 -->
+    <section id="about" class="container hero" aria-labelledby="hero-name">
+      <div class="section-head">
+        <span class="kicker"><span class="sec-no">01</span>关于</span>
+        <span class="kicker">EST. 2010 · 项目经理 / 全栈开发</span>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-figure">
+          <p class="hero-number"><span data-years-since="2010">16</span></p>
+          <div class="seal" aria-hidden="true"><span>沈超之印</span></div>
+        </div>
+
+        <div class="hero-copy">
+          <p class="hero-tagline">年，开发与交付。</p>
+          <h1 class="hero-name" id="hero-name">沈超</h1>
+          <p class="hero-role">项目经理 · 全栈开发工程师</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#services">查看服务</a>
+            <a class="btn" href="#contact">联系我</a>
+          </div>
+        </div>
+      </div>
+
+      <dl class="stats">
+        <div class="stat">
+          <dt>入行开发</dt>
+          <dd>2010</dd>
+        </div>
+        <div class="stat">
+          <dt>开始独立承接项目</dt>
+          <dd>2016</dd>
+        </div>
+        <div class="stat">
+          <dt>前端 · 后端 · 运维</dt>
+          <dd>全栈</dd>
+        </div>
+        <div class="stat">
+          <dt>带领研发团队</dt>
+          <dd>10+<small>人</small></dd>
+        </div>
+      </dl>
+
+      <div class="hero-detail">
+        <p class="lead">2010 年入行，从一线开发做到项目管理，始终没有离开代码与交付。主要承接网站建设、微信小程序、APP 与企业管理系统定制，项目覆盖医疗（互联网医院）、政务、零售电商与通信等行业。个人可独立完成需求梳理、界面实现、接口与数据库设计、服务器部署到上线运维的完整链路；现任项目经理，带领团队统筹交付——技术与管理一肩挑，对结果负责到底，减少多方协作中的沟通损耗。近年持续将 AI 引入开发流程：以 AI 辅助编码提升交付效率，并把智能问答、内容生成、语义理解等大模型能力落地到实际业务系统中。习惯把复杂问题拆解为简单、可验证的方案，并将实践经验整理成技术文章公开分享。</p>
+        <div class="hero-aside">
+          <ul class="tag-list" aria-label="标签">
+            <li>项目管理</li>
+            <li>全栈开发</li>
+            <li>微信小程序</li>
+            <li>企业系统定制</li>
+            <li>AI 应用集成</li>
+          </ul>
+          <blockquote class="quote">
+            <p>代码写给机器执行，注释写给人类理解，AI 是加速器，不是替代思考的借口。</p>
+            <footer>—— 工作信条</footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 足迹 -->
+    <section id="timeline" class="container section" aria-labelledby="timeline-title">
+      <div class="section-head">
+        <span class="kicker"><span class="sec-no">02</span>足迹</span>
+      </div>
+      <h2 class="section-title" id="timeline-title">成长足迹</h2>
+      <p class="section-sub">2010 年至今，从写出第一个可用程序，到独立承担端到端交付，再到带领团队交付项目</p>
+      <ol class="timeline">
+        <li class="timeline-row">
+          <p class="timeline-year">2010<span>起点</span></p>
+          <p>第一次用代码解决真实问题，由此入行。早期以大量动手实践打基础，在反复调试中确立了「以解决问题为目标写代码」的工作方式，这一原则沿用至今。</p>
+        </li>
+        <li class="timeline-row">
+          <p class="timeline-year">2016<span>上线</span></p>
+          <p>独立完成本站的域名注册、ICP 备案、服务器部署与上线，同年开始独立承接网站建设、微信小程序与 APP 开发项目。工作范围由此从「写代码」扩展到需求沟通、进度把控与上线保障。</p>
+        </li>
+        <li class="timeline-row">
+          <p class="timeline-year">2019<span>摸索</span></p>
+          <p>早期项目采用 ASP.NET + EasyUI 的前后端一体模式，页面与业务逻辑耦合在同一工程中。随着项目规模与交互复杂度提升，开始转向前后端分离架构：后端专注提供 RESTful 接口，前端以 Vue 组件化开发、响应式布局与前端工程化重构交付方式——职责边界更清晰，系统更易维护与扩展，用户体验同样过关。</p>
+        </li>
+        <li class="timeline-row">
+          <p class="timeline-year">2022<span>深耕</span></p>
+          <p>后端技术栈由 ASP.NET 升级至 .NET / ASP.NET Core，结合 Docker、Nginx 打通从开发到部署的完整技术链路，具备独立承担端到端交付的能力。开始承接企业管理系统定制项目，在需求变更与工期约束下保障交付质量。</p>
+        </li>
+        <li class="timeline-row">
+          <p class="timeline-year">2023<span>沉淀</span></p>
+          <p>将项目经验沉淀为两类公开、可检验的产出：发布在 <a href="https://blog.csdn.net/sc398167472" target="_blank" rel="noopener noreferrer">CSDN</a> 与<a href="https://www.cnblogs.com/ctacy" target="_blank" rel="noopener noreferrer">博客园</a>的技术文章，以及部署在本站、可直接使用的在线工具。经验只有能被别人复用，才算真正沉淀下来。</p>
+        </li>
+        <li class="timeline-row">
+          <p class="timeline-year">2025<span>管理</span></p>
+          <p>从一线开发走向项目管理，现任项目经理，带领 10 人以上的研发团队。负责需求统筹、进度与风险把控、团队分工协作与交付质量，同时保持对技术方案的直接把关——既理解业务目标，也清楚实现细节，让需求方与开发团队之间少走弯路。</p>
+        </li>
+        <li class="timeline-row">
+          <p class="timeline-year">现在<span>持续</span></p>
+          <p>在项目管理之外，依然坚持全栈路线，覆盖前端、后端与运维，重视系统的稳定性与可维护性，而非技术名词的堆砌。同时深入研究 AI 在开发流程与业务系统中的落地方式：对内用于提升开发效率，对外为客户系统接入大模型能力，让新技术服务于实际业务，而不是追逐热点。</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 03 技能 -->
+    <section id="skills" class="container section" aria-labelledby="skills-title">
+      <div class="section-head">
+        <span class="kicker"><span class="sec-no">03</span>技能</span>
+      </div>
+      <h2 class="section-title" id="skills-title">技能</h2>
+      <p class="section-sub">覆盖全栈交付所需的核心技术领域</p>
+      <ul class="skill-list">
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>后端开发</h3>
+            <p>基于 .NET / ASP.NET Core 构建高可用 RESTful 服务，主导过多项企业系统的接口规范制定、业务建模与权限体系设计，确保数据一致性与接口幂等性。</p>
+            <p class="skill-tags">C# · .NET / ASP.NET Core · Entity Framework · RESTful API · 权限设计</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="后端开发熟练度 100%">
+            <span class="skill-num" aria-hidden="true">100</span>
+            <span class="skill-bar" style="--level: 100%;" aria-hidden="true"></span>
+          </div>
+        </li>
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>前端开发</h3>
+            <p>掌握 Vue 生态组件化体系，可独立完成从 UI 原型到生产级前端工程的全链路交付，注重跨设备响应式适配与首屏性能优化。</p>
+            <p class="skill-tags">HTML/CSS · JavaScript · Vue · 响应式设计 · 组件化</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="前端开发熟练度 90%">
+            <span class="skill-num" aria-hidden="true">90</span>
+            <span class="skill-bar" style="--level: 90%;" aria-hidden="true"></span>
+          </div>
+        </li>
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>移动开发</h3>
+            <p>具备微信小程序与 APP 全链路开发能力，熟悉平台审核规则与版本发布流程，有支付、推送、定位等核心能力模块的完整落地经验。</p>
+            <p class="skill-tags">微信小程序 · APP · 跨端适配 · 支付接入</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="移动开发熟练度 80%">
+            <span class="skill-num" aria-hidden="true">80</span>
+            <span class="skill-bar" style="--level: 80%;" aria-hidden="true"></span>
+          </div>
+        </li>
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>运维部署</h3>
+            <p>基于 Docker + Nginx + Linux 自建容器化部署体系，支持 CI/CD 流水线搭建与日志监控告警配置，保障服务高可用与故障快速定位。</p>
+            <p class="skill-tags">Docker · Linux · Nginx · CI/CD · 日志监控</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="运维部署熟练度 75%">
+            <span class="skill-num" aria-hidden="true">75</span>
+            <span class="skill-bar" style="--level: 75%;" aria-hidden="true"></span>
+          </div>
+        </li>
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>数据存储</h3>
+            <p>具备 SQL Server、MySQL、Oracle 等主流关系型数据库的表结构设计与索引调优实战经验，能够基于慢查询分析定位并优化性能瓶颈；结合 Redis 构建缓存层、Elasticsearch 支撑全文检索，依据数据形态按需选型 SQL/NoSQL，兼顾查询性能与存储成本。</p>
+            <p class="skill-tags">SQL Server · MySQL · Oracle · Redis · MongoDB · Elasticsearch · 索引优化</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="数据存储熟练度 85%">
+            <span class="skill-num" aria-hidden="true">85</span>
+            <span class="skill-bar" style="--level: 85%;" aria-hidden="true"></span>
+          </div>
+        </li>
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>工具链</h3>
+            <p>以 Git 规范化分支管理为基础，配合 Shell 自动化脚本与 Postman 接口测试，构建从开发、测试到交付的工程化协作闭环，减少流程摩擦。</p>
+            <p class="skill-tags">Git · VS Code · Postman · Shell 脚本</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="工具链熟练度 88%">
+            <span class="skill-num" aria-hidden="true">88</span>
+            <span class="skill-bar" style="--level: 88%;" aria-hidden="true"></span>
+          </div>
+        </li>
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>系统安全</h3>
+            <p>将 JWT 认证、RBAC 权限模型、参数校验与 SQL 注入防护纳入标准开发规范，通过设计阶段前置安全策略，系统性降低上线后的漏洞修复成本。</p>
+            <p class="skill-tags">JWT/OAuth · 参数校验 · 权限隔离</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="系统安全熟练度 78%">
+            <span class="skill-num" aria-hidden="true">78</span>
+            <span class="skill-bar" style="--level: 78%;" aria-hidden="true"></span>
+          </div>
+        </li>
+        <li class="skill-row">
+          <div class="skill-main">
+            <h3>性能优化</h3>
+            <p>通过慢查询分析、接口耗时监控与前端资源懒加载，系统性定位并消除性能瓶颈，以度量数据驱动优化决策，而非依赖经验猜测。</p>
+            <p class="skill-tags">慢查询排查 · 缓存策略 · 懒加载</p>
+          </div>
+          <div class="skill-level" role="img" aria-label="性能优化熟练度 82%">
+            <span class="skill-num" aria-hidden="true">82</span>
+            <span class="skill-bar" style="--level: 82%;" aria-hidden="true"></span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 04 服务 -->
+    <section id="services" class="container section" aria-labelledby="services-title">
+      <div class="section-head">
+        <span class="kicker"><span class="sec-no">04</span>服务</span>
+      </div>
+      <h2 class="section-title" id="services-title">服务项目</h2>
+      <p class="section-sub">从单一功能到完整系统，按需提供开发、集成、加固与运维服务</p>
+      <div class="service-grid">
+        <article class="service">
+          <span class="service-no">01</span>
+          <h3>网站建设</h3>
+          <p>企业官网、产品展示站与个人主页，覆盖设计、开发到部署的全流程，重点保障加载速度与移动端体验。</p>
+          <ul>
+            <li>响应式布局，移动端与桌面端统一体验</li>
+            <li>域名备案、服务器部署与上线全程协助</li>
+            <li>SEO 基础优化与页面加载性能调优</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">02</span>
+          <h3>微信小程序开发</h3>
+          <p>覆盖需求梳理、开发到上线审核的全流程，承接商城、预约、工具类等常见场景的定制开发。</p>
+          <ul>
+            <li>商城、预约、工具类场景均可定制</li>
+            <li>微信支付与常见第三方接口对接</li>
+            <li>协助处理上架审核与常见驳回问题</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">03</span>
+          <h3>APP 开发</h3>
+          <p>移动应用从原型到上线的完整交付，兼顾功能实现与长期可维护性，可按需对接后端与第三方服务。</p>
+          <ul>
+            <li>需求梳理与原型设计，避免返工浪费</li>
+            <li>后端接口与数据库同步设计</li>
+            <li>上线后的迭代维护与问题响应</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">04</span>
+          <h3>企业管理系统定制</h3>
+          <p>围绕企业内部流程（进销存、审批、人事等）定制管理系统，以系统化流转替代表格与人工传递。</p>
+          <ul>
+            <li>进销存、审批、人事等流程数字化</li>
+            <li>角色权限与数据权限精细化管控</li>
+            <li>与现有系统对接，避免数据孤岛</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">05</span>
+          <h3>系统安全加固</h3>
+          <p>对已上线系统进行安全评估与加固，修复登录鉴权、越权访问与注入等常见风险。</p>
+          <ul>
+            <li>登录鉴权与权限体系梳理</li>
+            <li>常见注入、越权风险排查</li>
+            <li>敏感数据脱敏与传输加密</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">06</span>
+          <h3>运维托管</h3>
+          <p>系统上线后的日常巡检、数据备份与故障响应，支持按需长期托管，保障业务持续稳定运行。</p>
+          <ul>
+            <li>服务器与服务的日常巡检</li>
+            <li>数据库定期备份与恢复演练</li>
+            <li>故障发生时的及时响应处理</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">07</span>
+          <h3>AI 应用集成</h3>
+          <p>将大模型能力接入现有业务系统，聚焦具体业务场景的实际效果，而非停留在演示层面。</p>
+          <ul>
+            <li>智能问答、内容生成类功能落地</li>
+            <li>AI 辅助开发流程搭建与提效</li>
+            <li>大模型 API 接入与业务逻辑整合</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">08</span>
+          <h3>第三方接口对接</h3>
+          <p>打通系统与外部服务之间的数据通道，以接口自动流转替代人工搬运与重复录入。</p>
+          <ul>
+            <li>支付、短信、地图、登录等常见 API 接入</li>
+            <li>企业内部系统之间的数据对接</li>
+            <li>接口规范设计与异常容错处理</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service">
+          <span class="service-no">09</span>
+          <h3>数据迁移与整理</h3>
+          <p>新旧系统切换或数据分散于多个来源时，提供安全可控、全程可回滚的数据迁移与清洗。</p>
+          <ul>
+            <li>数据库结构评估与迁移方案设计</li>
+            <li>历史数据清洗、字段映射与校验</li>
+            <li>迁移过程全程留痕，回滚方案先行</li>
+          </ul>
+          <a class="service-link" href="#contact">咨询详情 <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+
+      <h3 class="sub-title" id="process-title">合作流程</h3>
+      <ol class="process" aria-labelledby="process-title">
+        <li class="process-step">
+          <span class="process-no">01</span>
+          <h4>沟通需求</h4>
+          <p>了解业务背景、目标用户与核心功能，梳理需求要点，明确项目范围与期望上线时间。</p>
+        </li>
+        <li class="process-step">
+          <span class="process-no">02</span>
+          <h4>方案与报价</h4>
+          <p>根据需求给出技术方案、功能清单与开发周期，并据此报价，双方确认后正式启动。</p>
+        </li>
+        <li class="process-step">
+          <span class="process-no">03</span>
+          <h4>开发</h4>
+          <p>按约定节点推进开发，阶段性同步进度，便于及时确认效果、调整方向。</p>
+        </li>
+        <li class="process-step">
+          <span class="process-no">04</span>
+          <h4>验收上线</h4>
+          <p>对照功能清单逐项验收，问题修复确认后完成部署上线与交付。</p>
+        </li>
+        <li class="process-step">
+          <span class="process-no">05</span>
+          <h4>维护</h4>
+          <p>上线后提供问题响应与迭代支持，也可按需转为长期运维托管。</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 05 工具 -->
+    <section id="tools" class="container section" aria-labelledby="tools-title">
+      <div class="section-head">
+        <span class="kicker"><span class="sec-no">05</span>工具</span>
+      </div>
+      <h2 class="section-title" id="tools-title">在线工具</h2>
+      <p class="section-sub">部署在本站、打开即用的开发者工具集，全部在浏览器本地计算，内容不上传服务器</p>
+      <ul class="tool-list">
+        <li>
+          <a class="tool-row" href="tools.html#json-format">
+            <span class="tool-name">JSON 工具</span>
+            <span class="tool-desc">格式化校验（支持注释）、树形视图与 JSONPath 查询、压缩转义、排序，与 CSV / XML / YAML 互转，生成带注释的 C# 实体与 TypeScript 接口</span>
+            <span class="tool-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="tool-row" href="tools.html#sql-format">
+            <span class="tool-name">格式化</span>
+            <span class="tool-desc">SQL、XML、CSS 的美化与压缩</span>
+            <span class="tool-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="tool-row" href="tools.html#base64">
+            <span class="tool-name">编码转换</span>
+            <span class="tool-desc">Base64、URL、Unicode、Base32、Punycode、Escape、摩斯密码</span>
+            <span class="tool-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="tool-row" href="tools.html#md5">
+            <span class="tool-name">哈希与加密</span>
+            <span class="tool-desc">MD5、SHA、HMAC、文件哈希、CRC、AES 加解密、JWT 解码、随机密码与 UUID</span>
+            <span class="tool-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="tool-row" href="tools.html#timestamp">
+            <span class="tool-name">开发辅助</span>
+            <span class="tool-desc">SQL 建表转 C# 实体、Unix 时间戳、文本对比、正则测试、变量命名转换、带宽换算</span>
+            <span class="tool-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      </ul>
+      <p class="tools-more"><a class="btn btn-primary" href="tools.html">查看全部工具</a></p>
+    </section>
+
+    <!-- 06 联系 -->
+    <section id="contact" class="container section" aria-labelledby="contact-title">
+      <div class="section-head">
+        <span class="kicker"><span class="sec-no">06</span>联系</span>
+      </div>
+      <h2 class="section-title" id="contact-title">联系方式</h2>
+      <p class="section-sub">工作日晚间与周末响应，消息 24 小时内回复，欢迎咨询项目需求或技术问题</p>
+      <ul class="contact-list">
+        <li class="contact-row">
+          <span class="contact-label">微信</span>
+          <span class="contact-value" id="val-wechat">shenchao-wx</span>
+          <button class="btn contact-copy" data-val="shenchao-wx" aria-label="复制微信号" type="button">复制</button>
+        </li>
+        <li class="contact-row">
+          <span class="contact-label">QQ</span>
+          <span class="contact-value" id="val-qq">398167472</span>
+          <button class="btn contact-copy" data-val="398167472" aria-label="复制 QQ 号" type="button">复制</button>
+        </li>
+        <li class="contact-row">
+          <span class="contact-label">GitHub</span>
+          <span class="contact-value">github.com/<wbr>ctacy</span>
+          <a class="btn" href="https://github.com/ctacy" target="_blank" rel="me noopener noreferrer" aria-label="访问 GitHub 主页（新窗口）">访问</a>
+        </li>
+        <li class="contact-row">
+          <span class="contact-label">CSDN</span>
+          <span class="contact-value">blog.csdn.net/<wbr>sc398167472</span>
+          <a class="btn" href="https://blog.csdn.net/sc398167472" target="_blank" rel="me noopener noreferrer" aria-label="访问 CSDN 博客（新窗口）">访问</a>
+        </li>
+        <li class="contact-row">
+          <span class="contact-label">博客园</span>
+          <span class="contact-value">cnblogs.com/<wbr>ctacy</span>
+          <a class="btn" href="https://www.cnblogs.com/ctacy" target="_blank" rel="me noopener noreferrer" aria-label="访问博客园（新窗口）">访问</a>
+        </li>
+        <li class="contact-row">
+          <span class="contact-label">邮件</span>
+          <span class="contact-value">398167472<wbr>@qq.com</span>
+          <a class="btn btn-primary" href="mailto:398167472@qq.com?subject=合作咨询&body=Hi 沈超，我想了解一下……" aria-label="发送邮件">发邮件</a>
+        </li>
+      </ul>
+      <p class="contact-note">项目咨询请简要说明需求背景、核心功能与期望上线时间，便于快速评估并给出方案与报价。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>ICP 备案号：<a id="beian-no" href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">蜀ICP备13002783号-1</a></p>
+      <p id="copyright">Copyright &copy; 2016-<span id="year">2026</span>. 沈超 All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js?v=2026101705"></script>
+</body>
+
+</html>

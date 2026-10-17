@@ -1,0 +1,790 @@
+/* AI Accept 2026-10-16 main v1 */
+/* ============================================
+   在线工具页（tools.html）
+   复用 style.css 的 .btn / .field-* / .section-* / .kicker / .sub-title
+   ============================================ */
+
+/* ---------- 布局：顶部分类菜单 + 全宽操作区 ---------- */
+/* 工具页比主页更宽：数据类工具需要横向空间 */
+.tools-container {
+  max-width: 1680px;
+}
+
+.tools-menu {
+  position: sticky;
+  top: var(--s8);
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+}
+
+.tools-menu-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  min-height: var(--s8);
+}
+
+.tools-menu-home {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.tools-menu-home:hover {
+  color: var(--accent-text);
+}
+
+.tools-menu-list {
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+  margin-right: auto;
+}
+
+.tools-menu-item {
+  position: relative;
+}
+
+.tools-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  min-height: 44px;
+  padding: 0 var(--s3);
+  background: transparent;
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+
+.tools-menu-btn::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-left: var(--s1);
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--t-fast) var(--ease);
+}
+
+.tools-menu-btn:hover,
+.tools-menu-btn[aria-expanded="true"] {
+  border-color: var(--border);
+}
+
+.tools-menu-btn[aria-expanded="true"]::after {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.tools-menu-btn.is-current {
+  color: var(--accent-text);
+}
+
+/* 下拉面板（分类菜单与搜索结果共用） */
+.tools-panel {
+  position: absolute;
+  top: calc(100% + var(--s2));
+  left: 0;
+  z-index: 60;
+  width: max-content;
+  min-width: 280px;
+  max-width: min(520px, calc(100vw - var(--s6)));
+  max-height: calc(100vh - var(--s10) - var(--s6));
+  overflow-y: auto;
+  padding: var(--s2) 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+}
+
+.tools-panel[hidden] {
+  display: none;
+}
+
+.tools-panel a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--s2) var(--s4);
+  border-left: 2px solid transparent;
+  text-decoration: none;
+}
+
+.tools-panel a:hover,
+.tools-panel a:focus-visible {
+  background: var(--bg);
+}
+
+.tools-panel a[aria-current="page"] {
+  border-left-color: var(--accent);
+}
+
+.tools-panel-name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.tools-panel a:hover .tools-panel-name {
+  color: var(--accent-text);
+}
+
+.tools-panel-desc {
+  max-width: 44ch;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.tools-panel-empty {
+  padding: var(--s2) var(--s4);
+  font-size: var(--text-sm);
+  color: var(--text-2);
+}
+
+.tools-search {
+  position: relative;
+  flex: 0 1 280px;
+}
+
+.tools-search .field-input {
+  min-height: 40px;
+  padding: var(--s1) var(--s3);
+  font-size: var(--text-sm);
+}
+
+.tools-search .tools-panel {
+  left: auto;
+  right: 0;
+  width: 100%;
+  min-width: 280px;
+}
+
+.tools-layout {
+  padding-top: var(--s6);
+}
+
+.tool-view {
+  min-width: 0;
+}
+
+.tool-view .section-title:focus,
+.tool-view .tool-title:focus {
+  outline: none;
+}
+
+/* 工具页头部：一行标题 + 简介，压缩纵向占用 */
+.tool-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s2) var(--s5);
+  padding-bottom: var(--s4);
+  border-bottom: 2px solid var(--rule);
+}
+
+.tool-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+}
+
+.tool-desc {
+  flex: 1 1 320px;
+  font-size: var(--text-sm);
+  color: var(--text-2);
+}
+
+.tool-meta {
+  margin-left: auto;
+}
+
+/* ---------- 索引页 ---------- */
+.tool-index-group .sub-title {
+  margin-top: var(--s8);
+}
+
+.tool-index-group .sub-title .sec-no {
+  font-size: var(--text-sm);
+  vertical-align: middle;
+}
+
+.tool-index {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--s5);
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--border);
+}
+
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  height: 100%;
+  padding: var(--s5);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  transition: background-color var(--t-fast) var(--ease);
+}
+
+.tool-card:hover {
+  background: var(--surface);
+}
+
+.tool-card-name {
+  font-size: var(--text-base);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.tool-card:hover .tool-card-name {
+  color: var(--accent-text);
+}
+
+.tool-card-desc {
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+/* ---------- 工具通用组件 ---------- */
+.tool-body {
+  margin-top: var(--s5);
+}
+
+.tool-body>*+* {
+  margin-top: var(--s5);
+}
+
+/* 工具内小节标题：比页面级 .sub-title 小一档 */
+.tool-body .sub-title {
+  margin-top: var(--s7);
+  font-size: var(--text-lg);
+}
+
+.tool-body>.sub-title:first-child {
+  margin-top: 0;
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s5);
+}
+
+.tool-grid>.field-group+.field-group {
+  margin-top: 0;
+}
+
+/* 双栏输入/输出编辑区：尽量撑满视口，大段数据无需在框内反复滚动 */
+.tool-grid textarea.field-input {
+  height: max(420px, calc(100vh - 380px));
+  min-height: 240px;
+  resize: vertical;
+}
+
+.tool-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s3) var(--s5);
+}
+
+.tool-inline .field-group {
+  margin-top: 0;
+  min-width: 160px;
+}
+
+.tool-inline .field-group+.field-group {
+  margin-top: 0;
+}
+
+.tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+}
+
+.field-input.is-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  tab-size: 4;
+}
+
+textarea.field-input[readonly] {
+  background: var(--bg);
+}
+
+select.field-input,
+input.field-input {
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+}
+
+.field-hint {
+  margin-top: var(--s2);
+  font-size: var(--text-xs);
+  color: var(--text-2);
+}
+
+.field-msg.is-error {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.field-msg.is-ok {
+  color: var(--text);
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.check input {
+  width: var(--s4);
+  height: var(--s4);
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+/* 键值结果表 */
+.kv {
+  margin: 0;
+  border-top: 2px solid var(--rule);
+}
+
+.kv:empty {
+  border-top: 0;
+}
+
+.kv-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 8fr) auto;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.kv-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--text-2);
+}
+
+.kv-value {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  word-break: break-all;
+}
+
+.kv-row .btn {
+  min-height: 36px;
+  padding: 0 var(--s3);
+  font-size: var(--text-xs);
+}
+
+/* 富结果区（diff / 正则高亮等），等宽、保留空白 */
+.tool-pre {
+  margin: 0;
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+  padding: var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.tool-pre ins,
+.diff-add {
+  background: var(--tint-add);
+  text-decoration: none;
+}
+
+.tool-pre del,
+.diff-del {
+  background: var(--tint-del);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.tool-pre mark {
+  background: var(--tint-mark);
+  color: inherit;
+}
+
+/* 图片预览（如 Base64 文件转换） */
+.tool-preview {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  border: 1px solid var(--border);
+}
+
+/* ---------- 响应式 ---------- */
+@media (min-width: 1400px) {
+  .tool-index {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1100px) {
+  .tool-index {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* 菜单换为两行：分类一行，搜索独占一行 */
+  .tools-menu-inner {
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s4);
+    padding-top: var(--s2);
+    padding-bottom: var(--s2);
+  }
+
+  .tools-search {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  /* 下拉面板相对整条菜单定位，避免在窄屏溢出右边界 */
+  .tools-menu-inner {
+    position: relative;
+  }
+
+  .tools-menu-item {
+    position: static;
+  }
+
+  /* 窄屏菜单不吸顶，并压缩行高，把屏幕留给操作区 */
+  .tools-menu {
+    position: static;
+  }
+
+  .tools-menu-inner {
+    gap: 0 var(--s2);
+  }
+
+  .tools-menu-list {
+    flex: 1 1 0;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 0;
+    margin-right: 0;
+  }
+
+  .tools-menu-home,
+  .tools-menu-btn {
+    min-height: 40px;
+  }
+
+  .tools-panel {
+    left: var(--s4);
+    right: var(--s4);
+    width: auto;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .tools-search {
+    position: static;
+  }
+
+  .tools-search .tools-panel {
+    left: var(--s4);
+    right: var(--s4);
+    width: auto;
+  }
+
+  .tool-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tool-grid textarea.field-input {
+    height: max(260px, 45vh);
+  }
+
+  .tool-meta {
+    margin-left: 0;
+  }
+
+  .kv-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .kv-label {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .tool-index {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tools-menu-btn {
+    padding: 0 var(--s2);
+  }
+}
+
+/* ---------- JSON 树形视图 ---------- */
+/* AI Accept 2026-10-17 main v1 */
+/* 类型配色：字符串用朱色文字，数字用朱墨混色，布尔加粗，null 次要灰斜体；均为 token 组合，深浅色对比度 ≥ 4.5:1 */
+.jt-box {
+  height: max(420px, calc(100vh - 380px));
+  min-height: 240px;
+  overflow: auto;
+  padding: var(--s2) 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.jt,
+.jt ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jt ul[hidden] {
+  display: none;
+}
+
+.jt li:focus {
+  outline: none;
+}
+
+.jt-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  padding: 2px var(--s3) 2px calc(var(--depth, 0) * var(--s4) + var(--s2));
+  cursor: pointer;
+}
+
+.jt-row:hover {
+  background: var(--bg);
+}
+
+.jt li:focus-visible > .jt-row {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.jt li[aria-selected="true"] > .jt-row {
+  background: var(--selection);
+}
+
+.jt li.is-hit > .jt-row {
+  background: var(--tint-mark);
+}
+
+.jt li.is-hit[aria-selected="true"] > .jt-row {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.jt-toggle {
+  flex: none;
+  width: var(--s3);
+  color: var(--text-2);
+}
+
+.jt li[aria-expanded="false"] > .jt-row .jt-toggle::before {
+  content: "▸";
+}
+
+.jt li[aria-expanded="true"] > .jt-row .jt-toggle::before {
+  content: "▾";
+}
+
+.jt-key {
+  flex: none;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.jt-key::after {
+  content: ":";
+  font-weight: 400;
+  color: var(--text-2);
+}
+
+.jt > li > .jt-row .jt-key::after {
+  content: "";
+}
+
+.jt-val {
+  min-width: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.jt-string {
+  color: var(--accent-text);
+}
+
+.jt-number {
+  color: color-mix(in srgb, var(--accent-text) 55%, var(--text));
+  font-variant-numeric: tabular-nums;
+}
+
+.jt-boolean {
+  font-weight: 800;
+  color: var(--text);
+}
+
+.jt-null {
+  font-style: italic;
+  color: var(--text-2);
+}
+
+.jt-sum {
+  color: var(--text-2);
+}
+
+.jt li[aria-expanded="true"] > .jt-row .jt-sum {
+  font-size: var(--text-xs);
+}
+
+/* 展开后子节点已可见，只保留项数 */
+.jt li[aria-expanded="true"] > .jt-row .jt-brace {
+  display: none;
+}
+
+.jt-more {
+  padding: var(--s1) 0;
+}
+
+.jt-more .btn {
+  min-height: 32px;
+  margin-left: calc(var(--depth, 0) * var(--s4) + var(--s5));
+  padding: 0 var(--s3);
+  font-size: var(--text-xs);
+}
+
+.jt-detail {
+  padding-top: var(--s3);
+  border-top: 2px solid var(--rule);
+}
+
+.jt-detail[hidden] {
+  display: none;
+}
+
+.jt-detail-path {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  word-break: break-all;
+}
+
+.jt-detail-value {
+  max-height: 240px;
+  margin: var(--s3) 0;
+  overflow: auto;
+  padding: var(--s3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.jt-results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.jt-results:empty {
+  border-top: 0;
+}
+
+.jt-result {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--s4);
+  width: 100%;
+  padding: var(--s2) 0;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.jt-result:hover .jt-result-path {
+  color: var(--accent-text);
+}
+
+.jt-result-path,
+.jt-result-val {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  word-break: break-all;
+}
+
+.jt-result-val {
+  color: var(--text-2);
+}
+
+@media (max-width: 900px) {
+  .jt-box {
+    height: max(320px, 50vh);
+  }
+
+  .jt-result {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s1);
+  }
+}
+
+/* 深色：朱色文字本身在暗底只有约 5:1，底色只能极淡；用左侧色条补足状态的可见性 */
+[data-theme="dark"] .jt li[aria-selected="true"] > .jt-row {
+  background: color-mix(in srgb, var(--selection) 33%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+[data-theme="dark"] .jt li.is-hit > .jt-row {
+  background: color-mix(in srgb, var(--tint-mark) 18%, transparent);
+  box-shadow: inset 3px 0 0 var(--text-2);
+}
+
+[data-theme="dark"] .jt li.is-hit[aria-selected="true"] > .jt-row {
+  box-shadow: inset 3px 0 0 var(--accent);
+}

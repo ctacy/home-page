@@ -1,0 +1,11 @@
+# 本机 Claude Code 配置（含个人请求头），不提交
+.claude/settings.local.json
+
+# 发布脚本产物
+dist/
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
