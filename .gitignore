@@ -9,3 +9,6 @@ dist/
 Thumbs.db
 desktop.ini
 *.log
+
+# Claude Code 项目说明（含部署细节），仅本地保留
+CLAUDE.md
