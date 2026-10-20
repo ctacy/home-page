@@ -278,4 +278,70 @@ module.exports = function (t, Tools) {
   t.throws(function () { L.downloadSeconds('1', 'GB', 1024, '0', 'Mbps'); }, /大于 0/, '下载耗时 带宽为 0 报错');
   t.throws(function () { L.downloadSeconds('1', 'PB', 1024, '1', 'Mbps'); }, /未知大小单位/, '下载耗时 未知大小单位报错');
   t.throws(function () { L.downloadSeconds('1', 'GB', 1001, '1', 'Mbps'); }, /1024 或 1000/, '下载耗时 非法进制报错');
+
+  // ================= 数字大小写 =================
+  // 期望值来自《支付结算办法》附件「正确填写票据和结算凭证的基本规定」中的示例与手算
+  var rmbCases = {
+    '1409.50': '壹仟肆佰零玖元伍角整',
+    '6007.14': '陆仟零柒元壹角肆分',
+    '1680.32': '壹仟陆佰捌拾元叁角贰分',
+    '107000.53': '壹拾万柒仟元伍角叁分',
+    '325.04': '叁佰贰拾伍元零肆分',
+    '16.00': '壹拾陆元整',
+    '0': '零元整',
+    '0.05': '伍分',
+    '0.5': '伍角整',
+    '100000000': '壹亿元整',
+    '100000001': '壹亿零壹元整',
+    '1000010000': '壹拾亿零壹万元整',
+    '123450000000': '壹仟贰佰叁拾肆亿伍仟万元整',
+    '1000100000000': '壹万零壹亿元整',
+    '1000000010000': '壹万亿零壹万元整',
+    '9999999999999999.99': '玖仟玖佰玖拾玖万玖仟玖佰玖拾玖亿玖仟玖佰玖拾玖万玖仟玖佰玖拾玖元玖角玖分',
+    '¥10,005.50': '壹万零伍元伍角整',
+    '-12.3': '负壹拾贰元叁角整',
+    '１２３': '壹佰贰拾叁元整'
+  };
+  Object.keys(rmbCases).forEach(function (k) { t.equal(L.rmbUpper(k).text, rmbCases[k], '人民币大写 ' + k); });
+  t.equal(L.rmbUpper('1.005').text, '壹元零壹分', '人民币大写 分以下四舍五入');
+  t.equal(L.rmbUpper('9.995').text, '壹拾元整', '人民币大写 四舍五入连续进位');
+  t.ok(L.rmbUpper('1.005').rounded && !L.rmbUpper('1.000').rounded, '人民币大写 rounded 标记');
+  t.equal(L.rmbUpper('-0.001').text, '零元整', '人民币大写 舍入为 0 时不带负号');
+  t.throws(function () { L.rmbUpper('12345678901234567'); }, /16 位/, '人民币大写 超过 16 位报错');
+  t.throws(function () { L.rmbUpper('9999999999999999.995'); }, /16 位/, '人民币大写 进位后超过 16 位报错');
+  t.throws(function () { L.rmbUpper('1e5'); }, /有效/, '人民币大写 科学计数法报错');
+  t.throws(function () { L.rmbUpper('.'); }, /有效/, '人民币大写 只有小数点报错');
+
+  var cnLower = {
+    '0': '零', '10': '十', '15': '十五', '110': '一百一十', '1005': '一千零五', '10005': '一万零五',
+    '100000': '十万', '105000': '十万五千', '1000000001': '十亿零一', '3.14': '三点一四', '-0.5': '负零点五', '2.00': '二点零零'
+  };
+  Object.keys(cnLower).forEach(function (k) { t.equal(L.numberToChinese(k, false), cnLower[k], '中文小写 ' + k); });
+  t.equal(L.numberToChinese('10.5', true), '壹拾点伍', '中文大写 保留首位壹拾');
+  t.equal(L.numberToChinese('-0', false), '零', '中文小写 -0 不带负号');
+
+  var cnBack = {
+    '壹仟肆佰零玖元伍角整': '1409.5', '陆仟零柒元壹角肆分': '6007.14', '叁佰贰拾伍元零肆分': '325.04',
+    '人民币壹拾陆元整': '16', '伍分': '0.05', '零元整': '0', '十五': '15', '一百一十': '110', '三百五': '350',
+    '三百零五': '305', '一万五': '15000', '一亿五': '150000000', '一亿零五万': '100050000',
+    '一万二千三百四十五亿': '1234500000000', '二〇二六': '2026', '三点一四': '3.14', '点五': '0.5',
+    '负十二': '-12', '两千': '2000', '貳萬': '20000', '十亿零一': '1000000001'
+  };
+  Object.keys(cnBack).forEach(function (k) { t.equal(L.chineseToNumber(k), cnBack[k], '中文转数字 ' + k); });
+  t.equal(L.chineseToNumber(L.rmbUpper('9999999999999999.99').text), '9999999999999999.99', '中文转数字 16 位整数不丢精度');
+  var cnRound = 0;
+  for (var ri = 0; ri < 300; ri++) {
+    var rv = String(Math.floor(r() * Math.pow(10, 1 + Math.floor(r() * 15))));
+    if (L.chineseToNumber(L.numberToChinese(rv, false)) !== rv || L.chineseToNumber(L.numberToChinese(rv, true)) !== rv) cnRound++;
+  }
+  t.equal(cnRound, 0, '中文数字 随机整数小写 / 大写往返一致');
+  t.throws(function () { L.chineseToNumber('十百'); }, /单位顺序/, '中文转数字 单位顺序错误报错');
+  t.throws(function () { L.chineseToNumber('一二十'); }, /缺少单位/, '中文转数字 数字连续报错');
+  t.throws(function () { L.chineseToNumber('一万二万'); }, /多次/, '中文转数字 万重复报错');
+  t.throws(function () { L.chineseToNumber('一亿亿'); }, /亿亿/, '中文转数字 亿亿报错');
+  t.throws(function () { L.chineseToNumber('三abc'); }, /无法识别/, '中文转数字 非法字符报错');
+  t.throws(function () { L.chineseToNumber(''); }, /请输入/, '中文转数字 空输入报错');
+
+  t.equal(L.groupThousands('-1234567.891'), '-1,234,567.891', '千分位 负数与小数');
+  t.equal(L.groupThousands('123'), '123', '千分位 不足 4 位');
 };

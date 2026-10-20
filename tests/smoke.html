@@ -82,6 +82,7 @@
         'jwt': { input: JWT, expect: function (o) { return o.indexOf('John Doe') >= 0; } },
         'text-diff': { input: 'a\nb\nc', second: 'a\nB\nc\nd', expect: function (o) { return /d/.test(o); } },
         'case-convert': { input: 'XMLHttpRequest', expect: function (o) { return o.indexOf('xmlHttpRequest') >= 0 && o.indexOf('xml_http_request') >= 0; } },
+        'num-cn': { input: '10005.04', expect: function (o) { return o.indexOf('壹万零伍元零肆分') >= 0 && o.indexOf('一万零五点零四') >= 0 && o.indexOf('10,005.04') >= 0; } },
         'sql-csharp': { input: "CREATE TABLE [dbo].[T_User] ([Id] int NOT NULL PRIMARY KEY, [UserName] nvarchar(50) NOT NULL -- 用户名\n)", expect: function (o) { return /public class User/.test(o) && o.indexOf('/// 用户名') >= 0 && /public string UserName/.test(o); } },
         // 树形视图没有文本输出框：用 check 直接检查树 DOM 与节点路径
         'json-tree': {
@@ -112,7 +113,7 @@
       function fire(el) { el.dispatchEvent(new Event('input', { bubbles: true })); }
 
       var ids = Tools.list.map(function (t) { return t.id; });
-      check('注册了 34 个工具', ids.length === 34, ids.length);
+      check('注册了 35 个工具', ids.length === 35, ids.length);
 
       function runTool(i, done) {
         if (i >= ids.length) return done();

@@ -1,5 +1,5 @@
 // AI Accept 2026-10-16 main v1
-// 开发辅助：Unix 时间戳 / 文本对比 / 正则测试 / 变量命名转换 / 带宽换算
+// 开发辅助：Unix 时间戳 / 文本对比 / 正则测试 / 变量命名转换 / 带宽换算 / 数字大小写
 (function (global) {
   'use strict';
 
@@ -438,6 +438,187 @@
     if (abs >= 1e15 || abs < 1e-6) return n.toExponential(4);
     var s = n.toFixed(6).replace(/\.?0+$/, '');
     return s === '-0' ? '0' : s;
+  };
+
+  // AI Accept 2026-10-20 main v1
+  // ============================================================
+  // 6. 数字大小写（全程按字符串处理，16 位整数也不丢精度）
+  // ============================================================
+  var CN_DIGITS = { lower: '零一二三四五六七八九', upper: '零壹贰叁肆伍陆柒捌玖' };
+  var CN_UNITS = { lower: ['', '十', '百', '千'], upper: ['', '拾', '佰', '仟'] };
+  var CN_MAX_INT = 16; // 最大 9999万9999亿9999万9999
+
+  // 解析阿拉伯数字：容忍千分位逗号、空格、全角数字、¥ / RMB 前缀与「元」后缀
+  // 返回 { neg, ip: 整数部分（无前导零）, frac: 小数部分（原样） }
+  lib.parseArabicNumber = function (input) {
+    var s = cleanValue(input)
+      .replace(/[０-９．－＋]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+      .replace(/[\s,，_]/g, '')
+      .replace(/^([+-]?)(?:[¥￥]|RMB)/i, '$1')
+      .replace(/元$/, '');
+    var m = /^([+-]?)(\d*)(?:\.(\d*))?$/.exec(s);
+    if (!s || !m || !(m[2] || m[3])) throw new Error('请输入有效的数字，如 1234.56');
+    var ip = m[2].replace(/^0+/, '') || '0', frac = m[3] || '';
+    if (ip.length > CN_MAX_INT) throw new Error('整数部分最多 16 位（万亿级）');
+    return { neg: m[1] === '-' && /[1-9]/.test(ip + frac), ip: ip, frac: frac };
+  };
+
+  // ≤4 位、无前导零的非零数字串：中间连续的 0 只读一个「零」，末尾的 0 不读
+  function cnSection(s, d, u) {
+    var out = '', zero = false;
+    for (var i = 0; i < s.length; i++) {
+      var n = +s.charAt(i);
+      if (n === 0) { zero = true; continue; }
+      if (zero) { out += d.charAt(0); zero = false; }
+      out += d.charAt(n) + u[s.length - 1 - i];
+    }
+    return out;
+  }
+
+  // 无前导零的非零整数串：按 亿 / 万 递归拆分，低段以 0 开头时补「零」
+  function cnInt(s, d, u) {
+    var size = s.length > 8 ? 8 : s.length > 4 ? 4 : 0;
+    if (!size) return cnSection(s, d, u);
+    var lo = s.slice(s.length - size), loTrim = lo.replace(/^0+/, '');
+    var out = cnInt(s.slice(0, s.length - size), d, u) + (size === 8 ? '亿' : '万');
+    if (loTrim) out += (lo.charAt(0) === '0' ? d.charAt(0) : '') + cnInt(loTrim, d, u);
+    return out;
+  }
+
+  // 数字 → 中文读法（小写：一千零五 / 大写：壹仟零伍），小数逐位读出
+  lib.numberToChinese = function (input, upper) {
+    var p = lib.parseArabicNumber(input), key = upper ? 'upper' : 'lower', d = CN_DIGITS[key];
+    var out = p.ip === '0' ? d.charAt(0) : cnInt(p.ip, d, CN_UNITS[key]);
+    if (!upper) out = out.replace(/^一十/, '十'); // 口语：十五、十万
+    if (p.frac) {
+      out += '点';
+      for (var i = 0; i < p.frac.length; i++) out += d.charAt(+p.frac.charAt(i));
+    }
+    return (p.neg ? '负' : '') + out;
+  };
+
+  function incDigits(s) {
+    var a = s.split(''), i = a.length - 1;
+    while (i >= 0 && a[i] === '9') a[i--] = '0';
+    if (i < 0) return '1' + a.join('');
+    a[i] = String(+a[i] + 1);
+    return a.join('');
+  }
+
+  // 人民币金额大写（依《支付结算办法》书写规定）：精确到分，超出部分四舍五入
+  // 返回 { text, rounded }
+  lib.rmbUpper = function (input) {
+    var p = lib.parseArabicNumber(input);
+    var digits = p.ip + (p.frac + '00').slice(0, 2);
+    if (p.frac.length > 2 && +p.frac.charAt(2) >= 5) digits = incDigits(digits);
+    var ip = digits.slice(0, -2).replace(/^0+/, '') || '0';
+    var jiao = +digits.charAt(digits.length - 2), fen = +digits.charAt(digits.length - 1);
+    if (ip.length > CN_MAX_INT) throw new Error('整数部分最多 16 位（万亿级）');
+    var D = CN_DIGITS.upper, out = ip === '0' ? '' : cnInt(ip, D, CN_UNITS.upper) + '元';
+    if (!jiao && !fen) {
+      out = (out || '零元') + '整';
+    } else {
+      if (jiao) out += D.charAt(jiao) + '角';
+      else if (out) out += '零'; // 角位为 0、分位不为 0：元后须写「零」
+      out += fen ? D.charAt(fen) + '分' : '整';
+    }
+    var nonZero = ip !== '0' || jiao || fen;
+    return { text: (p.neg && nonZero ? '负' : '') + out, rounded: p.frac.length > 2 && /[1-9]/.test(p.frac.slice(2)) };
+  };
+
+  var CN_DIGIT_MAP = {
+    '零': 0, '〇': 0, '○': 0, '一': 1, '壹': 1, '二': 2, '贰': 2, '貳': 2, '两': 2, '兩': 2,
+    '三': 3, '叁': 3, '參': 3, '四': 4, '肆': 4, '五': 5, '伍': 5, '六': 6, '陆': 6, '陸': 6,
+    '七': 7, '柒': 7, '八': 8, '捌': 8, '九': 9, '玖': 9
+  };
+  var CN_UNIT_MAP = { '十': 10, '拾': 10, '百': 100, '佰': 100, '千': 1000, '仟': 1000 };
+
+  function cnDigit(c) {
+    if (!(c in CN_DIGIT_MAP)) throw new Error('无法识别的字符「' + c + '」');
+    return CN_DIGIT_MAP[c];
+  }
+
+  // 万以内一段：「三百五」按口语视为 350，「三百零五」为 305
+  function cnParseSection(s) {
+    if (!s) throw new Error('数字不完整，单位前缺少数字');
+    var total = 0, num = -1, last = 10000, zero = false;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charAt(i);
+      if (c in CN_UNIT_MAP) {
+        var u = CN_UNIT_MAP[c];
+        if (u >= last) throw new Error('单位顺序有误：「' + c + '」');
+        total += (num < 0 ? 1 : num) * u;
+        last = u; num = -1; zero = false;
+      } else {
+        var v = cnDigit(c);
+        if (v === 0) { zero = true; continue; }
+        if (num >= 0) throw new Error('「' + s + '」中数字连续，缺少单位');
+        num = v;
+      }
+    }
+    if (num >= 0) total += !zero && last < 10000 ? num * last / 10 : num;
+    return total;
+  }
+
+  // 亿以内（≤8 位）：shortUnit 为上一级单位的十分之一，用于「一万五」「一亿五」这类口语简写
+  function cnParseWan(s, shortUnit) {
+    if (shortUnit && s.length === 1 && CN_DIGIT_MAP[s]) return CN_DIGIT_MAP[s] * shortUnit;
+    var parts = s.split(/[万萬]/);
+    if (parts.length > 2) throw new Error('「万」出现多次，请检查');
+    if (parts.length === 1) return cnParseSection(s);
+    var lo = parts[1] ? cnParseWan(parts[1], 1000) : 0;
+    return cnParseSection(parts[0]) * 10000 + lo;
+  }
+
+  function cnParseInt(s) {
+    if (!/[十拾百佰千仟万萬亿億]/.test(s)) { // 无单位：逐位读（二〇二六 → 2026）
+      var digits = '';
+      for (var i = 0; i < s.length; i++) digits += cnDigit(s.charAt(i));
+      return digits.replace(/^0+(?=\d)/, '');
+    }
+    var parts = s.split(/[亿億]/);
+    if (parts.length > 2) throw new Error('暂不支持「亿亿」及以上');
+    if (parts.length === 1) return String(cnParseWan(s));
+    var hi = cnParseWan(parts[0]), lo = parts[1] ? cnParseWan(parts[1], 1e7) : 0;
+    if (!hi) throw new Error('「亿」前缺少数字');
+    var loStr = String(lo);
+    return hi + '00000000'.slice(loStr.length) + loStr;
+  }
+
+  // 中文数字 / 大写金额 → 阿拉伯数字字符串（如 '-1234.56'）
+  lib.chineseToNumber = function (input) {
+    var s = cleanValue(input).replace(/\s+/g, '').replace(/^(?:人民币|RMB|[¥￥])/i, '');
+    var neg = /^[负負-]/.test(s);
+    if (neg) s = s.slice(1);
+    if (!s) throw new Error('请输入中文数字，如 壹仟贰佰叁拾肆元伍角陆分');
+    var frac = '', money = false, m;
+    if ((m = /^(.*?)[点點](.*)$/.exec(s))) {
+      s = m[1];
+      for (var i = 0; i < m[2].length; i++) frac += cnDigit(m[2].charAt(i));
+      if (!s) s = '零';
+    } else {
+      s = s.replace(/[整正]$/, '');
+      var jiao = 0, fen = 0;
+      if ((m = /(.)分$/.exec(s))) { fen = cnDigit(m[1]); s = s.slice(0, -2); money = true; }
+      if ((m = /(.)[角毛]$/.exec(s))) { jiao = cnDigit(m[1]); s = s.slice(0, -2); money = true; }
+      if (money) s = s.replace(/[零〇]$/, '');
+      if (/[元圆圓块]$/.test(s)) { s = s.slice(0, -1); money = true; }
+      if (money) {
+        frac = (String(jiao) + fen).replace(/0+$/, '');
+        if (!s) s = '零';
+      }
+      if (!s) throw new Error('请输入中文数字');
+    }
+    var ip = cnParseInt(s);
+    var out = ip + (frac ? '.' + frac : '');
+    return (neg && /[1-9]/.test(out) ? '-' : '') + out;
+  };
+
+  // 千分位：'-1234567.89' → '-1,234,567.89'
+  lib.groupThousands = function (num) {
+    var m = /^(-?)(\d+)(\.\d+)?$/.exec(String(num));
+    if (!m) return String(num);
+    return m[1] + m[2].replace(/\B(?=(\d{3})+$)/g, ',') + (m[3] || '');
   };
 
   // ============================================================
@@ -911,6 +1092,58 @@
 
       runConv();
       runDl();
+    }
+  });
+
+  // AI Accept 2026-10-20 main v1
+  // ---------- 6. 数字大小写 ----------
+  Tools.register({
+    id: 'num-cn',
+    cat: 'dev',
+    name: '数字大小写转换',
+    desc: '阿拉伯数字与中文小写、大写、人民币金额大写互转，自动识别输入方向，16 位整数不丢精度。',
+    keywords: 'number chinese rmb money upper 数字 大写 小写 金额 人民币 中文 财务 发票',
+    render: function (root, ui) {
+      var input = ui.input({ type: 'text', mono: true, value: '1234567.89', placeholder: '如 1234.56、¥10,005.50、壹万零伍元伍角、一亿五' });
+      var status = ui.status();
+      var kv = ui.kv(status);
+
+      function run() {
+        var raw = input.value;
+        if (!raw.trim()) { kv.set([]); status.clear(); return; }
+        try {
+          var num, rows = [];
+          if (/[0-9０-９]/.test(raw)) {
+            num = raw;
+          } else {
+            num = lib.chineseToNumber(raw);
+            rows.push({ label: '阿拉伯数字', value: num });
+          }
+          var p = lib.parseArabicNumber(num);
+          var plain = (p.neg ? '-' : '') + p.ip + (p.frac ? '.' + p.frac : '');
+          var rmb = lib.rmbUpper(num);
+          rows.push(
+            { label: '千分位', value: lib.groupThousands(plain) },
+            { label: '中文小写', value: lib.numberToChinese(num, false) },
+            { label: '中文大写', value: lib.numberToChinese(num, true) },
+            { label: '人民币大写', value: rmb.text }
+          );
+          kv.set(rows);
+          if (rmb.rounded) status.info('金额精确到分，分以下已四舍五入');
+          else status.clear();
+        } catch (e) {
+          kv.set([]);
+          status.error(e.message);
+        }
+      }
+
+      input.addEventListener('input', ui.debounce(run, 150));
+      root.appendChild(ui.field('输入', input, '输入阿拉伯数字转中文；输入中文数字（小写、大写或金额）转回阿拉伯数字。可带 ¥、千分位逗号与「元」。'));
+      root.appendChild(ui.actions([ui.button('清空', function () { input.value = ''; run(); input.focus(); })]));
+      root.appendChild(status);
+      root.appendChild(kv.root);
+      root.appendChild(ui.el('p', { className: 'field-hint', text: '人民币大写依《支付结算办法》书写：中间连续的 0 只写一个「零」，角位为 0 而分位不为 0 时元后写「零」，到元或角为止的金额后写「整」。' }));
+      run();
     }
   });
 })(typeof window !== 'undefined' ? window : globalThis);
